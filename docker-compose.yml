@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  mysql:
+    image: mariadb
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: O5@2b1m&rvt8
+    volumes:
+      - ./tmp/mysql:/var/lib/mysql
+    restart: always
+  web:
+    image: wordpress:php7.4
+    depends_on:
+      - mysql
+    volumes:
+      - ./tmp/wp:/var/www/html
+      - ./wp/themes/:/var/www/html/wp-content/themes/
+      - ./wp/plugins/:/var/www/html/wp-content/plugins/
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=mysql
+      - WORDPRESS_DB_NAME=wordpress
+      - WORDPRESS_DB_USER=root
+      - WORDPRESS_DB_PASSWORD=O5@2b1m&rvt8
+    ports:
+      - 8080:80
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: O5@2b1m&rvt8
+      PMA_HOST: mysql
+    restart: always
+    volumes:
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    ports:
+      - 8181:80
